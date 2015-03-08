@@ -6,6 +6,7 @@ open import Data.Nat
 open import Data.Nat.Show
 open import Data.String hiding (show)
 open import Data.Vec hiding (_++_)
+open import Foreign.Haskell
 open import IO
 import IO.Primitive as IOPrim
 import Network.Primitive as NetPrim
@@ -40,4 +41,4 @@ showPort : PortNumber → String
 showPort (portNum n) = show (toℕ n)
 
 connectTo : IPAddress → PortNumber → IO IOPrim.Handle
-connectTo ip pn = lift (NetPrim.connectTo (showIP ip) (showPort pn))
+connectTo ip (portNum n) = lift (NetPrim.connectTo (showIP ip) (toInteger (toℕ n)))
