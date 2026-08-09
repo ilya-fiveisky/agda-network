@@ -1,16 +1,18 @@
 module Network.Primitive where
 
-open import Data.Nat
-open import Data.String
-open import Data.Unit
-open import Foreign.Haskell
-open import IO.Primitive
+open import Agda.Builtin.Nat using (Nat)
+open import Agda.Builtin.String using (String)
+open import IO.Primitive.Core using (IO)
+open import IO.Primitive.Handle using (Handle)
+
+{-# FOREIGN GHC
+import Network
+import Text.Read
+#-}
 
 postulate
   withSocketsDo : ∀ {a} {A : Set a} → IO A → IO A
-  connectTo     : String → Integer → IO Handle
+  connectTo     : String → Nat → IO Handle
 
-{-# IMPORT Network #-}
-{-# IMPORT Text.Read #-}
-{-# COMPILED withSocketsDo (\_ _ -> Network.withSocketsDo) #-}
-{-# COMPILED connectTo (\s i -> Network.connectTo s $ Network.PortNumber (fromIntegral i)) #-}
+{-# COMPILE GHC withSocketsDo (\_ _ -> Network.withSocketsDo) #-}
+{-# COMPILE GHC connectTo (\s i -> Network.connectTo s $ Network.PortNumber (fromIntegral i)) #-}

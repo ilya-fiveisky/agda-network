@@ -1,14 +1,16 @@
+{-# OPTIONS  --guardedness #-}
+
 module Network where
 
 open import Data.Fin hiding (lift; _<_)
 open import Function
 open import Data.Nat
 open import Data.Nat.Show
-open import Data.String hiding (show)
+open import Data.String hiding (show; map)
 open import Data.Vec hiding (_++_)
 open import Foreign.Haskell
 open import IO
-import IO.Primitive as IOPrim
+open import IO.Primitive.Handle using (Handle)
 import Network.Primitive as NetPrim
 
 withSocketsDo : ∀ {a} {A : Set a} → IO A → IO A
@@ -40,5 +42,5 @@ data PortNumber : Set where
 showPort : PortNumber → String
 showPort (portNum n) = show (toℕ n)
 
-connectTo : IPAddress → PortNumber → IO IOPrim.Handle
-connectTo ip (portNum n) = lift (NetPrim.connectTo (showIP ip) (toInteger (toℕ n)))
+connectTo : IPAddress → PortNumber → IO Handle
+connectTo ip (portNum n) = lift (NetPrim.connectTo (showIP ip) (toℕ n))
