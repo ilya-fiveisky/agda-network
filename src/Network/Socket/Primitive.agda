@@ -1,4 +1,4 @@
-module Network.Primitive where
+module Network.Socket.Primitive where
 
 open import Agda.Builtin.Nat using (Nat)
 open import Agda.Builtin.String using (String)
