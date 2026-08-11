@@ -8,7 +8,6 @@ open import Data.Nat
 open import Data.Nat.Show
 open import Data.String hiding (show; map)
 open import Data.Vec hiding (_++_)
-open import Foreign.Haskell
 open import IO
 open import IO.Primitive.Handle using (Handle)
 import Network.Socket.Primitive as NSP
