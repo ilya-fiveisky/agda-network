@@ -2,7 +2,7 @@
 
 module Test where
 
-open import Function.Base using (_$_)
+open import Function using (_$_)
 open import IO
 
 open import Network.CURL using (curl)

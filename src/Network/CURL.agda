@@ -2,13 +2,20 @@
 
 module Network.CURL where
 
-open import Data.List.Base using ([])
-open import Data.String using (String)
-open import Function.Base using (_$_; case_of_)
+open import Data.Bool using (if_then_else_)
+open import Data.List using ([]; [_])
+open import Data.String using (String; _++_)
 open import IO
-open import System.Process using (readProcess)
+open import System.Exit using (isSuccess)
+open import System.Process using (callProcessWithExitCode; readProcess)
 
-curlCmd = "curl.exe"
+-- Necessary for Windows detection (see note at https://learn.microsoft.com/en-us/windows/curl/)
+getCurlName : IO String
+getCurlName = do
+  ec ← callProcessWithExitCode "systeminfo" ["/?"]
+  pure ("curl" ++ (if isSuccess ec then ".exe" else ""))
 
 curl : IO String
-curl = readProcess curlCmd [] ""
+curl = do
+  curlName ← getCurlName
+  readProcess curlName [] ""
