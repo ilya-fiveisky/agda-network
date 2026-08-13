@@ -3,9 +3,11 @@
 module Network.CURL where
 
 open import Data.Bool using (if_then_else_)
+open import Data.Default
 open import Data.List using (List;  []; [_]; map)
 open import Data.Product.Base using (_×_)
 open import Data.String using (String; _++_)
+open import Function using (_$_)
 open import IO
 open import System.Exit using (ExitCode; isSuccess)
 open import System.Process using (callProcessWithExitCode; readProcessWithExitCode)
@@ -22,7 +24,7 @@ getCURLName = do
   ec ← callProcessWithExitCode "systeminfo" ["/?"]
   pure ("curl" ++ (if isSuccess ec then ".exe" else ""))
 
-curl : List CURLOption → String → IO (ExitCode × String × String)
-curl opts stdin = do
+curl : {{stdin : WithDefault ""}} → List CURLOption → IO (ExitCode × String × String)
+curl {{stdin}} opts = do
   curlName ← getCURLName
-  readProcessWithExitCode curlName (map show opts) stdin
+  readProcessWithExitCode curlName (map show opts) $ stdin .value
