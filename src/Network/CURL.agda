@@ -5,7 +5,7 @@ module Network.CURL where
 open import Data.Bool using (if_then_else_)
 open import Data.Default
 open import Data.List using (List;  []; [_]; map)
-open import Data.Product.Base using (proj₁; proj₂)
+open import Data.Product.Base using (_,_)
 open import Data.String using (String; _++_)
 open import Function using (_$_)
 open import IO
@@ -33,5 +33,5 @@ record CallResult : Set where
 curl : {{stdin : WithDefault ""}} → List CURLOption → IO CallResult
 curl {{stdin}} opts = do
   curlName ← getCURLName
-  r ← readProcessWithExitCode curlName (map show opts) $ stdin .value
-  pure $ record {exitCode = proj₁ r; stdOut = proj₁ $ proj₂  r; stdErr = proj₂ $ proj₂ r}
+  (exitCode , (stdOut , stdErr)) ← readProcessWithExitCode curlName (map show opts) $ stdin .value
+  pure $ record {exitCode = exitCode; stdOut = stdOut; stdErr = stdErr}
