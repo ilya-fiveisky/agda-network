@@ -13,10 +13,10 @@ open import System.Exit using (ExitCode; isSuccess)
 open import System.Process using (callProcessWithExitCode; readProcessWithExitCode)
 
 data CURLOption : Set where
-  - : String → CURLOption -- just for raw command line args. Examples: (- "--help") or (- "https://www.example.com/")
-
+  ？ : String → CURLOption -- just for raw command line args. Examples: (？ "--help") or (？ "https://www.example.com/")
+ 
 show : CURLOption → String
-show (- s) = s
+show (？ s) = s
 
 -- Necessary for Windows detection (see note at https://learn.microsoft.com/en-us/windows/curl/)
 getCURLName : IO String

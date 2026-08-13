@@ -12,5 +12,5 @@ open import Network.CURL
 
 main : Main
 main = run $ do
-  result ← curl (- "https://www.example.com/" ∷ [])
+  result ← curl $ ？ "https://www.example.com/" ∷ []
   putStrLn $ proj₁ $ proj₂ result
