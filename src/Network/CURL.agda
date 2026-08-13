@@ -11,7 +11,7 @@ open import System.Exit using (ExitCode; isSuccess)
 open import System.Process using (callProcessWithExitCode; readProcessWithExitCode)
 
 data CURLOption : Set where
-  - : String → CURLOption -- just as you would write option in command line. Examples: (- "--help") or (- "https://www.example.com/")
+  - : String → CURLOption -- just for raw command line args. Examples: (- "--help") or (- "https://www.example.com/")
 
 show : CURLOption → String
 show (- s) = s
