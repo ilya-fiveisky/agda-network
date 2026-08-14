@@ -17,13 +17,14 @@ data CURLOption : Set where
  
 show : CURLOption → String
 show (？ s) = s
-
--- Necessary for Windows detection (see note at https://learn.microsoft.com/en-us/windows/curl/)
+{-
+-- Necessary for Windows detection (see note at https://learn.microsoft.com/en-us/windows/curl/).
+-- Well... I found that it somehow works without .exe. I guess it's PowerShell issue only.
 getCURLName : IO String
 getCURLName = do
   ec ← callProcessWithExitCode "systeminfo" ["/?"]
   pure ("curl" ++ (if isSuccess ec then ".exe" else ""))
-
+-}
 record CallResult : Set where
   field
     exitCode : ExitCode
@@ -32,6 +33,6 @@ record CallResult : Set where
 
 curl : {{stdin : WithDefault ""}} → List CURLOption → IO CallResult
 curl {{stdin}} opts = do
-  curlName ← getCURLName
-  (exitCode , (stdOut , stdErr)) ← readProcessWithExitCode curlName (map show opts) $ stdin .value
+--  curlName ← getCURLName
+  (exitCode , (stdOut , stdErr)) ← readProcessWithExitCode "curl" (map show opts) $ stdin .value
   pure $ record {exitCode = exitCode; stdOut = stdOut; stdErr = stdErr}
