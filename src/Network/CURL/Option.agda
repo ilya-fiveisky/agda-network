@@ -16,6 +16,8 @@ data Content : Set where
   string file : String → Content
   stdin : Content
 
+pattern str s = string s
+
 import Data.Char.Properties as Char using (_≟_)
 open import Data.List.Membership.DecPropositional Char._≟_
 open import Relation.Nullary.Decidable.Core using (does)
@@ -24,39 +26,40 @@ open import Relation.Nullary.Decidable.Core using (does)
 quotesIfSpace : String → String
 quotesIfSpace s = if does (' ' ∈? toList s) then between "\"" "\"" s else s
 
-_ : quotesIfSpace "x y" ≡ "\"x y\""
-_ = refl
+_ : quotesIfSpace "x y" ≡ "\"x y\""; _ = refl
 
 instance
   Show-Content = Show Content ∋ λ where
-    .show (string s) → quotesIfSpace s
+    .show (str s) → quotesIfSpace s
     .show (file s) → "@" ++ quotesIfSpace s
     .show stdin → "@-"
 
-_ : show (string "x y") ≡ "\"x y\""
-_ = refl
-
-_ : show stdin ≡ "@-"
-_ = refl
+_ : show (str "x y") ≡ "\"x y\""; _ = refl
+_ : show stdin ≡ "@-"; _ = refl
 
 data Data : Set where
   ascii binary : Content → Data
 
+pattern a c = ascii c
+pattern b c = binary c
+
 instance
   Show-Data = Show Data ∋ λ where
-    .show (ascii c) → "-d" <+> show c
-    .show (binary c) → "--data-binary" <+> show c
+    .show (a c) → " " ++ show c
+    .show (b c) → "-binary" <+> show c
 
-_ : show (ascii (string "some data")) ≡ "-d \"some data\""
-_ = refl
+_ : show (a (str "some data")) ≡ " \"some data\""; _ = refl
 
 data Option : Set where
   ？ : String → Option -- just for raw command line args. Examples: (？ "--help") or (？ "https://www.example.com/")
-  data′ d : Data → Option
-{-
-show : Option → String
-show (？ s) = s
-show (data′ (ascii (string s))) = "-d " ++ quotesIfSpace s
+  data′ : Data → Option
 
-show (d x) = show $ data′ x
--}
+pattern d x = data′ x
+
+instance
+  Show-Option = Show Option ∋ λ where
+    .show (？ s) → s
+    .show (d dat) → "--data" ++ show dat
+
+_ : show (d (a (str "ascii data"))) ≡ "--data \"ascii data\""; _ = refl
+_ : show (d (b (str "binary data"))) ≡ "--data-binary \"binary data\""; _ = refl
