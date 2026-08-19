@@ -11,12 +11,8 @@ open import Function using (_$_)
 open import IO
 open import System.Exit using (ExitCode; isSuccess)
 open import System.Process using (callProcessWithExitCode; readProcessWithExitCode)
+open import Network.CURL.Option
 
-data CURLOption : Set where
-  ？ : String → CURLOption -- just for raw command line args. Examples: (？ "--help") or (？ "https://www.example.com/")
- 
-show : CURLOption → String
-show (？ s) = s
 {-
 -- Necessary for Windows detection (see note at https://learn.microsoft.com/en-us/windows/curl/).
 -- Well... I found that it somehow works without .exe. I guess it's PowerShell issue only.
@@ -31,7 +27,7 @@ record CallResult : Set where
     stdOut : String
     stdErr : String
 
-curl : {{stdin : WithDefault ""}} → List CURLOption → IO CallResult
+curl : {{stdin : WithDefault ""}} → List Option → IO CallResult
 curl {{stdin}} opts = do
 --  curlName ← getCURLName
   (exitCode , (stdOut , stdErr)) ← readProcessWithExitCode "curl" (map show opts) $ stdin .value
