@@ -63,3 +63,4 @@ instance
 
 _ : show (d (a (str "ascii data"))) ≡ "--data \"ascii data\""; _ = refl
 _ : show (d (b (str "binary data"))) ≡ "--data-binary \"binary data\""; _ = refl
+_ : show (d (b (file "filename"))) ≡ "--data-binary @filename"; _ = refl
