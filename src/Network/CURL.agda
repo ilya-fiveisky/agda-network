@@ -52,7 +52,7 @@ curlName = "curl"
 curl : {{stdi : WithDefault ""}} → List Option → IO CallResult
 curl {{stdi}} opts = do
 --  curlName ← getCURLName
-  let strOpts = (map show opts)
+  let strOpts = map show opts
   let optsStr =  unwords strOpts
   (exitCode , (stdOut , stdErr)) ← readProcessWithExitCode curlName strOpts $ stdi .value
   pure $ record {exitCode = exitCode; stdOut = stdOut; stdErr = stdErr; cmdLine = curlName <+> optsStr}
