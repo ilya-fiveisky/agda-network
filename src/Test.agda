@@ -18,4 +18,6 @@ main = run $ do
   -- For some weird reason all full --data options don't work (just -d works).
   -- Nevertheless directly in terminal copied curl cmdLine works.
   r ← curl $ d (str "name=xxx") ∷ ？ "--url" ∷ ？ "https://www.example.com/guest.cgi" ∷ []
+  putStrLn $ show r
+  r ← curl $ data′ (a (str "name=xxx")) ∷ ？ "https://www.example.com/guest.cgi" ∷ []
   putStrLn $ show r 

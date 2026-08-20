@@ -49,7 +49,7 @@ instance
 
 curlName = "curl"
 
-curl : {{stdin : WithDefault ""}} → List Option → IO CallResult
+curl : {{stdi : WithDefault ""}} → List Option → IO CallResult
 curl {{stdi}} opts = do
 --  curlName ← getCURLName
   let strOpts = (map show opts)
