@@ -45,22 +45,26 @@ pattern b c = binary c
 
 instance
   Show-Data = Show Data ∋ λ where
-    .show (a c) → " " ++ show c
+    .show (a c) → "-ascii" <+> show c
     .show (b c) → "-binary" <+> show c
 
-_ : show (a (str "some data")) ≡ " \"some data\""; _ = refl
+_ : show (a (str "some data")) ≡ "-ascii \"some data\""; _ = refl
 
 data Option : Set where
   ？ : String → Option -- just for raw command line args. Examples: (？ "--help") or (？ "https://www.example.com/")
   data′ : Data → Option
+  d : Content → Option
 
-pattern d x = data′ x
+--pattern d x = data′ x
 
 instance
   Show-Option = Show Option ∋ λ where
     .show (？ s) → s
-    .show (d dat) → "--data" ++ show dat
+    .show (data′ dat) → "--data" ++ show dat
+    .show (d c) → "-d" <+> show c
 
-_ : show (d (a (str "ascii data"))) ≡ "--data \"ascii data\""; _ = refl
-_ : show (d (b (str "binary data"))) ≡ "--data-binary \"binary data\""; _ = refl
-_ : show (d (b (file "filename"))) ≡ "--data-binary @filename"; _ = refl
+_ : show (data′ (a (str "ascii data"))) ≡ "--data-ascii \"ascii data\""; _ = refl
+_ : show (d (str "data")) ≡ "-d data"; _ = refl
+_ : show (data′ (b (str "binary data"))) ≡ "--data-binary \"binary data\""; _ = refl
+_ : show (data′ (b (file "filename"))) ≡ "--data-binary @filename"; _ = refl
+
