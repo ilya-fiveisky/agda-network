@@ -55,4 +55,4 @@ curl {{stdi}} opts = do
   let strOpts = map show opts
   let optsStr =  unwords strOpts
   (exitCode , (stdOut , stdErr)) ← readProcessWithExitCode curlName strOpts $ stdi .value
-  pure $ record {exitCode = exitCode; stdOut = stdOut; stdErr = stdErr; cmdLine = curlName <+> optsStr}
+  pure $ record {cmdLine = curlName <+> optsStr; exitCode = exitCode; stdOut = stdOut; stdErr = stdErr}
