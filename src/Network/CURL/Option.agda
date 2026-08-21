@@ -3,7 +3,7 @@
 module Network.CURL.Option where
 
 open import Data.Bool using (if_then_else_)
-open import Data.List using ([]; [_]; _∷_)
+open import Data.List using (List; []; [_]; _∷_)
 open import Data.Product.Base using (_,_)
 open import Data.String using (String; _++_; between; toList)
 open import Function using (_$_; _∋_)
@@ -54,3 +54,5 @@ _ : toCmdLineArgs (d (str "some data")) ≡ "--data" ∷ "\"some data\"" ∷ [];
 _ : toCmdLineArgs (db (str "binary data")) ≡ "--data-binary" ∷ "\"binary data\"" ∷ []; _ = refl
 _ : toCmdLineArgs (db (file "filename")) ≡ "--data-binary" ∷ "@filename" ∷ []; _ = refl
 
+instance
+  ToCmdLineArgs-List[Option] = ToCmdLineArgs (List Option) ∋ ToCmdLineArgs-List
