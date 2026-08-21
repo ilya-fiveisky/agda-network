@@ -5,15 +5,15 @@ module Network.CURL where
 open import Data.Bool using (if_then_else_)
 open import Data.Default
 open import Data.Integer.Show renaming (show to intShow)
-open import Data.List using (List;  []; [_]; map)
+open import Data.List using (List;  []; [_]; concat; map)
 open import Data.Product.Base using (_,_)
 open import Data.String using (String; _++_; _<+>_; unwords)
 open import Function using (_$_; _∋_)
 open import IO
 open import System.Exit using (ExitCode; ExitSuccess; ExitFailure; isSuccess)
 open import System.Process using (callProcessWithExitCode; readProcessWithExitCode)
-
 open import Class.Show
+open import ToCmdLineArgs
 
 open import Network.CURL.Option public
 
@@ -52,7 +52,7 @@ curlName = "curl"
 curl : {{stdi : WithDefault ""}} → List Option → IO CallResult
 curl {{stdi}} opts = do
 --  curlName ← getCURLName
-  let strOpts = map show opts
+  let strOpts = concat $ map toCmdLineArgs opts
   let optsStr =  unwords strOpts
   (exitCode , (stdOut , stdErr)) ← readProcessWithExitCode curlName strOpts $ stdi .value
   pure $ record {cmdLine = curlName <+> optsStr; exitCode = exitCode; stdOut = stdOut; stdErr = stdErr}
