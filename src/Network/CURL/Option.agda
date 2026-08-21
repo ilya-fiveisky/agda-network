@@ -11,9 +11,9 @@ open import Relation.Binary.PropositionalEquality using (_≡_; refl)
 open import Relation.Nullary.Decidable.Core using (does)
 open import ToCmdLineArgs
 
-data Content : Set where
-  string file : String → Content
-  stdin : Content
+data Source : Set where
+  string file : String → Source
+  stdin : Source
 
 pattern str s = string s
 
@@ -28,7 +28,7 @@ quotesIfSpace s = if does (' ' ∈? toList s) then between "\"" "\"" s else s
 _ : quotesIfSpace "x y" ≡ "\"x y\""; _ = refl
 
 instance
-  ToCmdLineArgs-Content = ToCmdLineArgs Content ∋ λ where
+  ToCmdLineArgs-Source = ToCmdLineArgs Source ∋ λ where
     .toCmdLineArgs (str s) → [ quotesIfSpace s ]
     .toCmdLineArgs (file s) → [ "@" ++ quotesIfSpace s ]
     .toCmdLineArgs stdin → [ "@-" ]
@@ -38,8 +38,8 @@ _ : toCmdLineArgs stdin ≡ [ "@-" ]; _ = refl
 
 data Option : Set where
   ？ : String → Option -- just for raw command line args. Examples: (？ "--help") or (？ "https://www.example.com/")
-  data′ : Content → Option
-  data-binary : Content → Option
+  data′ : Source → Option
+  data-binary : Source → Option
 
 pattern d x = data′ x
 pattern db x = data-binary x
@@ -47,8 +47,8 @@ pattern db x = data-binary x
 instance
   ToCmdLineArgs-Option = ToCmdLineArgs Option ∋ λ where
     .toCmdLineArgs (？ s) → [ s ]
-    .toCmdLineArgs (d c) → "--data" ∷  toCmdLineArgs c
-    .toCmdLineArgs (db c) → "--data-binary" ∷  toCmdLineArgs c
+    .toCmdLineArgs (d s) → "--data" ∷  toCmdLineArgs s
+    .toCmdLineArgs (db s) → "--data-binary" ∷  toCmdLineArgs s
 
 _ : toCmdLineArgs (d (str "some data")) ≡ "--data" ∷ "\"some data\"" ∷ []; _ = refl
 _ : toCmdLineArgs (db (str "binary data")) ≡ "--data-binary" ∷ "\"binary data\"" ∷ []; _ = refl
